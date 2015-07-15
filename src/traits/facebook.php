@@ -4,17 +4,17 @@ namespace jumper;
 trait facebookTrait 
 {
 
-    private static function fb_init() 
+    private static function fbInit() 
     {
 		$configClass=APP_NAMESPACE."\config";
         $configClass::setFBDefaultApplication();
     }
 	
-    public static function fb_getProfile() 
+    public static function fbGetProfile() 
     {
 		$profile = false;
 		try {
-			self::fb_init();
+			self::fbInit();
 			$session = new \Facebook\FacebookSession(f::getParam("fbUserAccessToken"));
 			$profile = (new \Facebook\FacebookRequest( $session, 'GET', '/me' ))->execute()->getResponse();
 		} catch (\Facebook\FacebookAuthorizationException $ex) {
@@ -26,11 +26,11 @@ trait facebookTrait
         return (array) $profile;
     }
     
-    public static function fb_getAlbums() 
+    public static function fbGetAlbums() 
     {
 		$albums = false;
 		try {
-			self::fb_init();
+			self::fbInit();
 			$session = new \Facebook\FacebookSession(f::getParam("fbUserAccessToken"));
 			$albums = (new \Facebook\FacebookRequest( $session, 'GET', '/me?fields=albums.limit(100).fields(id,name,photos.limit(1).fields(id,source,height,width))' ))->execute()->getGraphObject()->asArray();
 		} catch (\Facebook\FacebookAuthorizationException $ex) {
@@ -42,11 +42,11 @@ trait facebookTrait
         return (array) $albums;
     }    
     
-    public static function fb_getPhotos($albumId) 
+    public static function fbGetPhotos($albumId) 
     {
 		$photos = false;
 		try {
-			self::fb_init();
+			self::fbInit();
 			$session = new \Facebook\FacebookSession(f::getParam("fbUserAccessToken"));
 			$photos = (new \Facebook\FacebookRequest( $session, 'GET', "/$albumId/photos?limit=500&fields=id,source,height,width" ))->execute()->getGraphObject()->asArray();
 		} catch (\Facebook\FacebookAuthorizationException $ex) {
@@ -58,11 +58,11 @@ trait facebookTrait
         return (array) $photos;
     }    
     
-    public static function fb_savePhoto($photoId,$filename) 
+    public static function fbSavePhoto($photoId,$filename) 
     {
 		$out=false;
 		try {
-			self::fb_init();
+			self::fbInit();
 			$session = new \Facebook\FacebookSession(f::getParam("fbUserAccessToken"));
 			$image = (new \Facebook\FacebookRequest( $session, 'GET', "/$photoId" ))->execute()->getGraphObject()->asArray();
 			$image1=(array)($image["images"][0]);
@@ -81,13 +81,13 @@ trait facebookTrait
 		return $out;
     }
     
-    public static function fb_getUserId() 
+    public static function fbGetUserId() 
     {
-        self::fb_init();
+        self::fbInit();
         $h=getallheaders();
         $fbUserId=0;
 		try {
-			if (isset($h["user-data"]) and isset($h["user-data"]["_facebook_userid"]) and $h["user-data"]["_facebook_userid"]>0) {
+			if (isset($h["user-data"]) && isset($h["user-data"]["_facebook_userid"]) && $h["user-data"]["_facebook_userid"]>0) {
 				// user is logged in, and user has FB connect
 				$fbUserId=$h["user-data"]["_facebook_userid"];
 

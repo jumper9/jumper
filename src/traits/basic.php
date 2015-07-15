@@ -39,7 +39,7 @@ trait basicTrait
 		  if (error_reporting() == 0) {
 			return;
 		  }
-		  f::setError(400,"Server Error: $message");
+		  f::setError(400,"Server Error: $message - Severity: $severity - File $filename, line $lineno");
 		}
 
         $params=$_GET;
@@ -63,15 +63,8 @@ trait basicTrait
         }
         self::setParams($params);
 
-        $errorCode=0;
-        $errorMessages=array();
     }
     
-    public static function setResponseJson($responseJson) 
-    {
-        self::$responseJson=$responseJson;
-    }
-
     public static function dieError($p1,$p2=null,$p3=null) 
     {
         self::setError($p1,$p2,$p3);
@@ -93,7 +86,7 @@ trait basicTrait
             echo json_encode($errorData);
         } else {    
             if (self::$responseJson) {
-                header('Content-Type: application/json');
+                header('Content-Type: application/json; charset=utf-8');
                 echo json_encode(self::$responseJson,JSON_UNESCAPED_UNICODE);
             } 
             if (self::$view) {
@@ -107,6 +100,11 @@ trait basicTrait
         self::$view=$viewName;        
     }
     
+    public static function setResponseJson($responseJson) 
+    {
+        self::$responseJson=$responseJson;
+    }
+
     public static function responseTxtJson($txt) 
     {
         f::setResponseJson(json_decode($txt,true));
@@ -115,7 +113,7 @@ trait basicTrait
     public static function strtoken($string, $pos, $token) 
     {
         $explode = explode($token, $string);
-        if (abs($pos) > sizeof($explode) or $pos == 0) {
+        if (abs($pos) > sizeof($explode) || $pos == 0) {
                 $out = '';
         } else if ($pos > 0) {
                 $out = $explode [$pos-1];

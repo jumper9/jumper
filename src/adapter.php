@@ -11,7 +11,7 @@ include(__DIR__."/traits/image.php");
 include(__DIR__."/traits/date.php");
 include(__DIR__."/traits/google-analytics.php");
 
-class f 
+class J 
 {
 
     private static $responseJson;
@@ -20,6 +20,11 @@ class f
     private static $errorMessages;
     private static $params;
 
+	private static function bogus_just_for_validation() 
+	{
+		return array(self::$responseJson, self::$view, self::$errorCode, self::$errorMessages, self::$params);
+	}
+	
     use basicTrait;
     use dbTrait;
     use facebookTrait;

@@ -4,7 +4,7 @@ namespace jumper;
 trait googleAnalyticsTrait 
 {
 
-	public static function ga_getFirstprofileId(&$analytics) 
+	public static function gaGetFirstprofileId(\Google_Service_Analytics &$analytics) 
 	{
 	  // Get the user's first view (profile) ID.
 
@@ -44,7 +44,7 @@ trait googleAnalyticsTrait
 	  }
 	}
 
-	public static function ga_getResults(&$analytics, $profileId) 
+	public static function gaGetResults(\Google_Service_Analytics &$analytics, $profileId) 
 	{
 	  // Calls the Core Reporting API and queries for the number of sessions
 	  // for the last seven days.
@@ -55,7 +55,7 @@ trait googleAnalyticsTrait
 		   'ga:sessions');
 	}
 
-	public static function ga_printResults(&$results) 
+	public static function gaPrintResults(Object &$results) 
 	{
 	  // Parses the response from the Core Reporting API and prints
 	  // the profile name and total sessions.

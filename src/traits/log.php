@@ -45,6 +45,6 @@ trait logTrait
 	
     public static function log($message, array $context = array()) 
 	{
-		echo $message;
+		echo $message.$context;
 	} 
 }

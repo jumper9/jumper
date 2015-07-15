@@ -1,0 +1,24 @@
+{
+    "name": "jumper/jumper",
+	"require": {
+		"facebook/php-sdk-v4" : "4.0.*",
+		"tpyo/amazon-s3-php-class" : "0.5.*",
+		"j7mbo/twitter-api-php" : "1.0.*",
+		"google/apiclient" : "1.1.x-dev"
+    },
+	"license": "MIT",
+	"authors": [
+        {
+            "name": "Guille Filipich",
+            "email": "g@filipich.com",
+            "homepage": "http://www.filipich.com",
+            "role": "Developer"
+        }
+    ],
+	"support": {
+        "email": "g@filipich.com"
+    },
+	"autoload": {
+        "psr-4": { "jumper\\": ["src/"] }
+    }
+}

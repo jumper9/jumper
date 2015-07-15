@@ -4,7 +4,7 @@ namespace jumper;
 trait imageTrait 
 {
     
-    public static function base64_to_jpeg($base64_string, $output_file) 
+    public static function base64ToJpeg($base64_string, $output_file) 
     {
         $ifp = fopen($output_file, "wb"); 
         fwrite($ifp, base64_decode($base64_string)); 

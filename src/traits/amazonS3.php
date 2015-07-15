@@ -6,7 +6,7 @@ trait amazonS3Trait
 
 	public static function amazonS3Upload($uploadFile, $prefix = "") 
 	{
-		if(!$prefix and defined("AMAZON_DEFAULT_PREFIX")) {
+		if(!$prefix && defined("AMAZON_DEFAULT_PREFIX")) {
 			$prefix = AMAZON_DEFAULT_PREFIX;
 		}
         $configClass=APP_NAMESPACE."\config";
