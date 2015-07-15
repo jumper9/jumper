@@ -51,7 +51,7 @@ trait basicTrait
         $request_body = file_get_contents('php://input');
         try {
             $data = json_decode($request_body,true);
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             // do nothing
         }
         if (is_array($data)) {
@@ -107,7 +107,7 @@ trait basicTrait
 
     public static function responseTxtJson($txt) 
     {
-        f::setResponseJson(json_decode($txt,true));
+        self::setResponseJson(json_decode($txt,true));
     }
 
     public static function strtoken($string, $pos, $token) 

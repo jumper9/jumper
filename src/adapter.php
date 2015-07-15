@@ -20,8 +20,9 @@ class J
     private static $errorMessages;
     private static $params;
 
-	private static function bogus_just_for_validation() 
+	public static function bogusJustForValidation() 
 	{
+		return;
 		return array(self::$responseJson, self::$view, self::$errorCode, self::$errorMessages, self::$params);
 	}
 	

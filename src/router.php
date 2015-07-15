@@ -7,7 +7,8 @@ class Router
     public static function run() 
     {
         
-        $url = frontFilter::getUrl();
+		$frontFilterClassName = APP_NAMESPACE."\\frontFilter";
+        $url = $frontFilterClassName::getUrl();
 
         $module=f::strtoken($url,2,"/");
         $class=f::strtoken($url,3,"/");
@@ -25,14 +26,14 @@ class Router
             $method = f::strtoken($url,4,"/");
         } else {
             $method = strtolower($_SERVER["REQUEST_METHOD"]);
-            f::setParam("p1", f::strtoken($url,4,"/"));
+            J::setParam("p1", f::strtoken($url,4,"/"));
         }
 
 
         if (file_exists(APP_PATH."/$module/services/$class.php")) {
             $className::$method();
         } else {
-            f::setError(404,"Not Found");
+            J::setError(404,"Not Found");
         }
 
     }

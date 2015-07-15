@@ -95,7 +95,7 @@ trait facebookTrait
 				// login user FB connect is not found, so: verify with fbUserAccessToken
 				
 				try {
-					$session = new \Facebook\FacebookSession(f::getParam("fbUserAccessToken"));
+					$session = new \Facebook\FacebookSession(self::getParam("fbUserAccessToken"));
 					$user_profile = (new \Facebook\FacebookRequest( $session, 'GET', '/me' ))->execute()->getGraphObject(\Facebook\GraphUser::className());
 					$fbUserId = $user_profile->getId();
 				} catch (\Facebook\FacebookAuthorizationException $ex) {
@@ -108,7 +108,7 @@ trait facebookTrait
 			$fbUserId=0;
 		} catch (\Facebook\FacebookAuthorizationException $ex) {
 			$fbUserId=0;
-		} catch (Exception $ex) {
+		} catch (\Exception $ex) {
 			$fbUserId=0;
 		} 
 			

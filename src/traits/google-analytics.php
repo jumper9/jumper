@@ -34,13 +34,13 @@ trait googleAnalyticsTrait
 			return $items[0]->getId();
 
 		  } else {
-			throw new Exception('No views (profiles) found for this user.');
+			throw new \Exception('No views (profiles) found for this user.');
 		  }
 		} else {
-		  throw new Exception('No properties found for this user.');
+		  throw new \Exception('No properties found for this user.');
 		}
 	  } else {
-		throw new Exception('No accounts found for this user.');
+		throw new \Exception('No accounts found for this user.');
 	  }
 	}
 
@@ -55,7 +55,7 @@ trait googleAnalyticsTrait
 		   'ga:sessions');
 	}
 
-	public static function gaPrintResults(Object &$results) 
+	public static function gaPrintResults(\Object &$results) 
 	{
 	  // Parses the response from the Core Reporting API and prints
 	  // the profile name and total sessions.
