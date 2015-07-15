@@ -19,7 +19,7 @@ trait facebookTrait
 			$profile = (new \Facebook\FacebookRequest( $session, 'GET', '/me' ))->execute()->getResponse();
 		} catch (\Facebook\FacebookAuthorizationException $ex) {
 			$profile = false;
-		} catch (Exception $ex) {
+		} catch (\Exception $ex) {
 			$profile = false;
 		} 
 		
@@ -35,7 +35,7 @@ trait facebookTrait
 			$albums = (new \Facebook\FacebookRequest( $session, 'GET', '/me?fields=albums.limit(100).fields(id,name,photos.limit(1).fields(id,source,height,width))' ))->execute()->getGraphObject()->asArray();
 		} catch (\Facebook\FacebookAuthorizationException $ex) {
 			$albums = false;
-		} catch (Exception $ex) {
+		} catch (\Exception $ex) {
 			$albums = false;
 		} 
 			
@@ -51,7 +51,7 @@ trait facebookTrait
 			$photos = (new \Facebook\FacebookRequest( $session, 'GET', "/$albumId/photos?limit=500&fields=id,source,height,width" ))->execute()->getGraphObject()->asArray();
 		} catch (\Facebook\FacebookAuthorizationException $ex) {
 			$photos = false;
-		} catch (Exception $ex) {
+		} catch (\Exception $ex) {
 			$photos = false;
 		} 
 	
@@ -75,7 +75,7 @@ trait facebookTrait
 			$out=true;
 		} catch (\Facebook\FacebookAuthorizationException $ex) {
 			$out=false;
-		} catch (Exception $ex) {
+		} catch (\Exception $ex) {
 			$out=false;
 		} 
 		return $out;
@@ -100,7 +100,7 @@ trait facebookTrait
 					$fbUserId = $user_profile->getId();
 				} catch (\Facebook\FacebookAuthorizationException $ex) {
 					$fbUserId = -1;
-				} catch (Exception $ex) {
+				} catch (\Exception $ex) {
 					$fbUserId = -1;
 				}
 			}
