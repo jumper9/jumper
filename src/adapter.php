@@ -22,8 +22,8 @@ class J
 
 	public static function bogusJustForValidation() 
 	{
-		return;
-		return array(self::$responseJson, self::$view, self::$errorCode, self::$errorMessages, self::$params);
+		$a = array(self::$responseJson, self::$view, self::$errorCode, self::$errorMessages, self::$params);
+		return ($a=1);
 	}
 	
     use basicTrait;
