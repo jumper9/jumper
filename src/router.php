@@ -10,8 +10,8 @@ class Router
 		$frontFilterClassName = APP_NAMESPACE."\\frontFilter";
         $url = $frontFilterClassName::getUrl();
 
-        $module=f::strtoken($url,2,"/");
-        $class=f::strtoken($url,3,"/");
+        $module=J::strtoken($url,2,"/");
+        $class=J::strtoken($url,3,"/");
         $className = APP_NAMESPACE."\\".str_replace("-","",ucfirst($class))."Controller";
 
         if (file_exists(APP_PATH."/$module/services/$class.php")) {
@@ -20,13 +20,13 @@ class Router
             include(APP_PATH."/$module/$class.php");
         } 
 
-        if (!f::strtoken($url,4,"/")) {
+        if (!J::strtoken($url,4,"/")) {
             $method = strtolower($_SERVER["REQUEST_METHOD"]);
-        } else if (method_exists($className,f::strtoken($url,4,"/")) ){
-            $method = f::strtoken($url,4,"/");
+        } else if (method_exists($className,J::strtoken($url,4,"/")) ){
+            $method = J::strtoken($url,4,"/");
         } else {
             $method = strtolower($_SERVER["REQUEST_METHOD"]);
-            J::setParam("p1", f::strtoken($url,4,"/"));
+            J::setParam("p1", J::strtoken($url,4,"/"));
         }
 
 
