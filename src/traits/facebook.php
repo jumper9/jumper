@@ -15,7 +15,7 @@ trait facebookTrait
 		$profile = false;
 		try {
 			self::fbInit();
-			$session = new \Facebook\FacebookSession(f::getParam("fbUserAccessToken"));
+			$session = new \Facebook\FacebookSession(self::getParam("fbUserAccessToken"));
 			$profile = (new \Facebook\FacebookRequest( $session, 'GET', '/me' ))->execute()->getResponse();
 		} catch (\Facebook\FacebookAuthorizationException $ex) {
 			$profile = false;
@@ -31,7 +31,7 @@ trait facebookTrait
 		$albums = false;
 		try {
 			self::fbInit();
-			$session = new \Facebook\FacebookSession(f::getParam("fbUserAccessToken"));
+			$session = new \Facebook\FacebookSession(self::getParam("fbUserAccessToken"));
 			$albums = (new \Facebook\FacebookRequest( $session, 'GET', '/me?fields=albums.limit(100).fields(id,name,photos.limit(1).fields(id,source,height,width))' ))->execute()->getGraphObject()->asArray();
 		} catch (\Facebook\FacebookAuthorizationException $ex) {
 			$albums = false;
@@ -47,7 +47,7 @@ trait facebookTrait
 		$photos = false;
 		try {
 			self::fbInit();
-			$session = new \Facebook\FacebookSession(f::getParam("fbUserAccessToken"));
+			$session = new \Facebook\FacebookSession(self::getParam("fbUserAccessToken"));
 			$photos = (new \Facebook\FacebookRequest( $session, 'GET', "/$albumId/photos?limit=500&fields=id,source,height,width" ))->execute()->getGraphObject()->asArray();
 		} catch (\Facebook\FacebookAuthorizationException $ex) {
 			$photos = false;
@@ -63,7 +63,7 @@ trait facebookTrait
 		$out=false;
 		try {
 			self::fbInit();
-			$session = new \Facebook\FacebookSession(f::getParam("fbUserAccessToken"));
+			$session = new \Facebook\FacebookSession(self::getParam("fbUserAccessToken"));
 			$image = (new \Facebook\FacebookRequest( $session, 'GET', "/$photoId" ))->execute()->getGraphObject()->asArray();
 			$image1=(array)($image["images"][0]);
 			$imageUrl=$image1["source"];
@@ -91,7 +91,7 @@ trait facebookTrait
 				// user is logged in, and user has FB connect
 				$fbUserId=$h["user-data"]["_facebook_userid"];
 
-			} else if (f::getParam("fbUserAccessToken")) {
+			} else if (self::getParam("fbUserAccessToken")) {
 				// login user FB connect is not found, so: verify with fbUserAccessToken
 				
 				try {

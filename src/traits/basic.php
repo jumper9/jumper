@@ -39,7 +39,7 @@ trait basicTrait
 		  if (error_reporting() == 0) {
 			return;
 		  }
-		  f::setError(400,"Server Error: $message - Severity: $severity - File $filename, line $lineno");
+		  self::setError(400,"Server Error: $message - Severity: $severity - File $filename, line $lineno");
 		}
 
         $params=$_GET;
