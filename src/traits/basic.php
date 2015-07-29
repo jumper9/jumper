@@ -61,6 +61,9 @@ trait basicTrait
                 }
             }
         }
+		foreach($params as $k=>$v) {
+			$params[strtolower($k)] = $v;
+		}
         self::setParams($params);
 
     }
@@ -122,5 +125,14 @@ trait basicTrait
         }
         return trim($out);
     }
-    
+
+	public static function setExcelOutput($filename, $out) {
+		header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
+		header("Content-Disposition: attachment; filename=$filename");
+		header("Expires: 0");
+		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+		header("Cache-Control: private",false);
+		echo utf8_decode($out);
+		die;
+	}
 }

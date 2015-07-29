@@ -10,6 +10,7 @@ include(__DIR__."/traits/amazonS3.php");
 include(__DIR__."/traits/image.php");
 include(__DIR__."/traits/date.php");
 include(__DIR__."/traits/google-analytics.php");
+include(__DIR__."/traits/validator.php");
 
 class J 
 {
@@ -19,10 +20,11 @@ class J
     private static $errorCode;
     private static $errorMessages;
     private static $params;
+    private static $dbDebugLevel;
 
 	public static function bogusJustForValidation() 
 	{
-		$a = array(self::$responseJson, self::$view, self::$errorCode, self::$errorMessages, self::$params);
+		$a = array(self::$responseJson, self::$view, self::$errorCode, self::$errorMessages, self::$params, self::$dbDebugLevel);
 		$a = null;
 		return $a;
 	}
@@ -36,4 +38,5 @@ class J
     use dateTrait;
     use logTrait;
     use googleAnalyticsTrait;
+    use validatorTrait;
 }
