@@ -1,6 +1,6 @@
 {
     "name": "jumper/jumper",
-	"description" : "Jumper PHP - Component Abstraction Framework",
+	"description" : "Jumper - Superlight Framework",
 	"require": {
 		"facebook/php-sdk-v4" : "4.0.*",
 		"tpyo/amazon-s3-php-class" : "0.5.*",
