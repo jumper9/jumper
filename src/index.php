@@ -23,7 +23,7 @@ if(file_exists(APP_PATH."/../conf/frontFilter.php")) {
 include(__DIR__."/adapter.php");
 
 if(defined("APP_NAMESPACE")) {
-    class_alias('\\jumper\\J', APP_NAMESPACE.'\\f');
+    class_alias('\\jumper\\J', APP_NAMESPACE.'\\j');
 }
 
 J::initialize();

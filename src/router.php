@@ -10,12 +10,11 @@ class Router
 		$frontFilterClassName = APP_NAMESPACE."\\FrontFilter";
         $url = $frontFilterClassName::getUrl();
 
-		if($url=="") {
-			return;
-		}
-		
         $module=J::strtoken($url,2,"/");
         $class=J::strtoken($url,3,"/");
+		if($class=="") {
+			$class = "index";
+		}
         $className = APP_NAMESPACE."\\".str_replace("-","",ucfirst($class))."Controller";
         if (file_exists(APP_PATH."/$module/services/$class.php")) {
             include(APP_PATH."/$module/services/$class.php");
@@ -32,8 +31,12 @@ class Router
 
 
         if (file_exists(APP_PATH."/$module/services/$class.php")) {
-            $className::$method();
-        } else {
+             if(method_exists ($className, $method)) { 
+				$className::$method();
+			} else {
+				J::setError(404,"Not Found");
+			}
+         } else {
             J::setError(404,"Not Found");
         }
 

@@ -126,6 +126,67 @@ trait basicTrait
         return trim($out);
     }
 
+	public static function validateToken($token) {
+		
+		if(defined("ENV") && (ENV=="LOCAL" || ENV=="DEV") && $code == "AAAA") {
+			return true;
+		}
+		
+		self::dbQuery("delete from sc_captcha where created_date < DATE_SUB(NOW(),INTERVAL 15 MINUTE)");
+		$ok = (self::dbRes("select 1 from sc_captcha where code = {token} and remote_ip = {remote_ip}", array("token" => $token, "remote_ip" => $_SERVER["REMOTE_ADDR"])) == 1 );
+		self::dbQuery("delete from sc_captcha where code = {token} and remote_ip = {remote_ip}", array("token" => $token, "remote_ip" => $_SERVER["REMOTE_ADDR"]));
+				
+		return $ok;
+	}
+	
+	public static function validateCaptcha($id, $code) {
+		
+		if(defined("ENV") && (ENV=="LOCAL" || ENV=="DEV") && $code == "AAAA") {
+			return true;
+		}
+		
+		self::dbQuery("delete from sc_captcha where created_date < DATE_SUB(NOW(),INTERVAL 15 MINUTE)");
+		$ok = (self::dbRes("select 1 from sc_captcha where id = {id} and code = {code} and remote_ip = {remote_ip}", array("id" => $id, "code" => $code, "remote_ip" => $_SERVER["REMOTE_ADDR"])) == 1 );
+		self::dbQuery("delete from sc_captcha where id = {id} and remote_ip = {remote_ip}", array("id" => $id, "remote_ip" => $_SERVER["REMOTE_ADDR"]));
+				
+		return $ok;
+	}
+
+	public static function getToken() {
+	
+		$token = uniqId();
+		$id = self::dbInsert("insert into sc_captcha set code = {token}, created_date = now(), remote_ip = {remote-ip}", array("token" => $token, "remote-ip" => $_SERVER["REMOTE_ADDR"]));
+		
+		return array("token" => $token);
+	}
+	
+	public static function getCaptcha($params = array()) {
+	
+		$width = isset($params["width"]) ? $params["width"] : 55;
+		$height = isset($params["height"]) ? $params["height"] : 25;
+		$image = imagecreatetruecolor($width, $height);
+		$bg = imagecolorallocate($image, 255, 255,255);
+		imagefill($image, 0, 0, $bg);
+		$code = rand(str_repeat("1", (isset($params["digits"]) ? $params["digits"] : 25) ) * 1, str_repeat("9", (isset($params["digits"]) ? $params["digits"] : 25) ) * 1 ); 
+		$len = mb_strlen($code, "UTF-8");
+		$x = 8;
+		$y = 5;
+		for ($i = 0; $i < $len; $i++) {
+			$char = mb_substr($code, $i, 1, "UTF-8");
+			$color = imagecolorallocate($image, mt_rand(0, 125), mt_rand(0, 125), mt_rand(0, 125));
+			imagestring ($image , 4 , $x , $y , $char , $color );
+			$x += 10;
+		}
+		ob_start();
+		imagejpeg($image, null, 90);
+		$jpgImage = ob_get_clean();
+		
+		$data = "data:image/jpeg;base64," . base64_encode($jpgImage);
+		$id = self::dbInsert("insert into sc_captcha set code = {code}, created_date = now(), remote_ip = {remote-ip}", array("code" => $code, "remote-ip" => $_SERVER["REMOTE_ADDR"]));
+		
+		return array("id" => $id, "data" => $data);
+	}
+
 	public static function setExcelOutput($filename, $out) {
 		header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
 		header("Content-Disposition: attachment; filename=$filename");
