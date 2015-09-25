@@ -20,10 +20,11 @@ class J
     private static $errorCode;
     private static $errorMessages;
     private static $params;
+    private static $dbDebugLevel;
 
 	public static function bogusJustForValidation() 
 	{
-		$a = array(self::$responseJson, self::$view, self::$errorCode, self::$errorMessages, self::$params);
+		$a = array(self::$responseJson, self::$view, self::$errorCode, self::$errorMessages, self::$params, self::$dbDebugLevel);
 		$a = null;
 		return $a;
 	}

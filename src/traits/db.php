@@ -55,43 +55,69 @@ trait dbTrait
 		return substr(Db::$dbo->quote($string),1,-1);
 	}
 
+	public static function dbSetDebugLevel($debug = 1) {
+		self::$dbDebugLevel = $debug;
+	}
+
+	public static function dbGetDebugLevel() {
+		return (self::$dbDebugLevel);
+	}
+	
 	private static function dbPrepareSql($sql, $params) {
-		self::superLog(array("type"=>"sql", "sql"=>$sql));
-		return $sql;
+		if(!is_array($params)) {
+			return $sql;
+		}
 		$sql .= " ";
-		if(is_array($params)) {
-			foreach ($params as $k => $v) {
-				$params[strtolower($k)] = $v;
-			}
+		foreach ($params as $k => $v) {
+			$params[strtolower($k)] = $v;
 		}
 
 		$pos = mb_strpos($sql, "{", 0, "UTF-8");
 		$i=0;
+		$replacements = array();
 		while($pos and $i++<1000) {
+			
 			$pos2 = mb_strpos($sql, "}", $pos, "UTF-8"); 
 			$var = mb_substr($sql, $pos+1, $pos2 - $pos - 1, "UTF-8");
 			$type = strtolower(self::strtoken($var, 1, ":"));
 			$name = strtolower(self::strtoken($var, -1, ":"));
 			$value = '';
 			if($type == "p") {
+				// quoted from page parameter
 				$value = self::getParam($name);
+				$value = Db::$dbo->quote($value);
+			} else if($type == "d") {
+				// direct, no quotes. This is for table names or special structures
+				$value = $params[$name];
+				$value = substr(substr(Db::$dbo->quote($value),1),0,-1);
+			} else if($type == "n") {
+				// direct, no quotes & no encoding. This is for table names or special structures. Try to avoid this one!
+				$value = $params[$name];
 			} else if (isset($params[$name])){
+				// quoted from query parameter
 				if(is_array($params[$name])) {
+					// if an array, convert to json string
 					$value = json_encode($params[$name], JSON_UNESCAPED_UNICODE);
 				} else {
 					$value = $params[$name];
 				}
+				$value = Db::$dbo->quote($value);
 			} 
-			$value = Db::$dbo->quote($value);
-			$sql = mb_substr($sql, 0, $pos, "UTF-8") . $value . mb_substr($sql, $pos2+1, null, "UTF-8");
+
+			$replacements["{".$var."}"] = $value;
+			//$sql = mb_substr($sql, 0, $pos, "UTF-8") . $value . mb_substr($sql, $pos2+1, null, "UTF-8");
 
 			if ($pos2 + 1 >= mb_strlen($sql, "UTF-8")) {
 				break;
 			}
 			$pos = mb_strpos($sql, "{", $pos2, "UTF-8");
 		}
+		
+		foreach ($replacements as $var => $value) {
+			$sql = str_replace($var,$value,$sql);
+		}
 
-		if(defined("DB_DEBUG")) {
+		if(self::dbGetDebugLevel()) {
 			echo "\n".$sql."\n";
 		}
 		return $sql;
