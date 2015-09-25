@@ -142,7 +142,7 @@ trait basicTrait
 	public static function getToken() {
 	
 		$token = uniqId();
-		$id = self::dbInsert("insert into sc_captcha set code = {token}, created_date = now(), remote_ip = {remote-ip}", array("token" => $token, "remote-ip" => $_SERVER["REMOTE_ADDR"]));
+		self::dbQuery("insert into sc_captcha set code = {token}, created_date = now(), remote_ip = {remote-ip}", array("token" => $token, "remote-ip" => $_SERVER["REMOTE_ADDR"]));
 		
 		return array("token" => $token);
 	}
@@ -154,7 +154,6 @@ trait basicTrait
 		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 		header("Cache-Control: private",false);
 		echo utf8_decode($out);
-		die;
 	}
 
 	public static function superLog($p) {

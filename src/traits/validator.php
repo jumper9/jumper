@@ -16,9 +16,10 @@ trait validatorTrait
 		foreach ($rules as $rule) {
 			$type = self::strtoken($rule,1,":");
 			$number = self::strtoken($rule,2,":");
+			$lenValue = mb_strlen($value);
 			
 			if ($type == "letters") {
-				for($i=0; $i<mb_strlen($value); $i++) {
+				for($i=0; $i < $lenValue ; $i++) {
 					if(mb_strpos(" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZñÑáéíóúÁÉÍÓÚüÜ", mb_substr($value, $i, 1)) === false) {
 						$ok = false;
 						break;
@@ -26,7 +27,7 @@ trait validatorTrait
 				}
 				
 			} else if ($type == "integer") {
-				for($i=0; $i<mb_strlen($value); $i++) {
+				for($i=0; $i<$lenValue; $i++) {
 					if(mb_strpos("01234567890", mb_substr($value, $i, 1)) === false) {
 						$ok = false;
 						break;
@@ -34,7 +35,7 @@ trait validatorTrait
 				}
 				
 			} else if ($type == "address") {
-				for($i=0; $i<mb_strlen($value); $i++) {
+				for($i=0; $i<$lenValue; $i++) {
 					if(mb_strpos(" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZñÑáéíóúÁÉÍÓÚüÜ01234567890º.", mb_substr($value, $i, 1)) === false) {
 						$ok = false;
 						break;

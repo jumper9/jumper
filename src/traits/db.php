@@ -105,7 +105,6 @@ trait dbTrait
 			} 
 
 			$replacements["{".$var."}"] = $value;
-			//$sql = mb_substr($sql, 0, $pos, "UTF-8") . $value . mb_substr($sql, $pos2+1, null, "UTF-8");
 
 			if ($pos2 + 1 >= mb_strlen($sql, "UTF-8")) {
 				break;

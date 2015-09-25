@@ -42,10 +42,10 @@ trait facebookTrait
 				}
 			}
 		} catch (\Facebook\FacebookAuthorizationException $ex) {
-			var_dump($ex);
+			//var_dump($ex);
 			$posts = false;
 		} catch (\Exception $ex) {
-			var_dump($ex);
+			//var_dump($ex);
 			$posts = false;
 		} 
 		
