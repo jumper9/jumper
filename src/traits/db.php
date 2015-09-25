@@ -3,21 +3,21 @@ namespace jumper;
 
 trait dbTrait 
 {
-	public static function dbFullRes($sql, $params=array()) 
+	public static function dbFullRes($sql, $params=array(), $option1=null, $option2=null, $option3=null) 
 	{ 
-		$result = self::dbFetchAll($sql, $params);
+		$result = self::dbFetchAll($sql, $params, $option1, $option2, $option3);
         return $result; 
 	}
 	
-	public static function dbFirstRow($sql, $params=array()) 
+	public static function dbFirstRow($sql, $params=array(), $option1=null, $option2=null, $option3=null) 
 	{ 
-		$result = self::dbFetch($sql, $params);
+		$result = self::dbFetch($sql, $params, $option1, $option2, $option3);
         return $result; 
 	}
 	
-	public static function dbRes($sql, $params=array()) 
+	public static function dbRes($sql, $params=array(), $option1=null, $option2=null, $option3=null) 
 	{
-		$result = self::dbFetch($sql, $params);
+		$result = self::dbFetch($sql, $params, $option1, $option2, $option3);
 		if(is_array($result)) {
 			foreach($result as $k=>$v) {
 				return $v;
@@ -25,9 +25,9 @@ trait dbTrait
 		}
 	}
 	
-	public static function dbJson($sql, $params=array()) 
+	public static function dbJson($sql, $params=array(), $option1=null, $option2=null, $option3=null) 
 	{ 
-		$result = self::dbFetch($sql, $params);
+		$result = self::dbFetch($sql, $params, $option1, $option2, $option3);
 		if(is_array($result)) {
 			foreach($result as $k=>$v) {
 				return json_decode($v,true);
@@ -35,29 +35,29 @@ trait dbTrait
 		}
 	}
 	
-	public static function dbQuery($sql, $params=array()) 
+	public static function dbQuery($sql, $params=array(), $option1=null, $option2=null, $option3=null) 
 	{ 
-		self::dbFetch($sql, $params);
+		self::dbFetch($sql, $params, $option1, $option2, $option3);
 	}
 	
-	public static function dbInsert($sql, $params=array())  
-	{ 
-		self::dbFetch($sql, $params);
-		return Db::$dbo->lastInsertId() * 1;
+	public static function dbInsert($sql, $params=array(), $option1=null, $option2=null, $option3=null)  { 
+		self::dbFetch($sql, $params, $option1, $option2, $option3);
+		return Db::$dbo->lastInsertId()*1;
 	}
 	
 	public static function dbInsertId() 
 	{ 
-		return Db::$dbo->lastInsertId() * 1;
+		return Db::$dbo->lastInsertId();
 	}
 	
-	private static function dbEscape($string) 
+	public static function dbEscape($string) 
 	{ 
 		return substr(Db::$dbo->quote($string),1,-1);
 	}
 
-	private static function dbPrepareSql($sql, $params) 
-	{
+	private static function dbPrepareSql($sql, $params) {
+		self::superLog(array("type"=>"sql", "sql"=>$sql));
+		return $sql;
 		$sql .= " ";
 		if(is_array($params)) {
 			foreach ($params as $k => $v) {
@@ -97,8 +97,11 @@ trait dbTrait
 		return $sql;
 	}
 	
-	private static function dbFetchAll($sql, $params=array()) 
+	private static function dbFetchAll($sql, $params=array(), $option1=null, $option2=null, $option3=null) 
 	{
+		$convert = defined("SQL_ESCAPE") && ($option1 == SQL_ESCAPE or $option2 == SQL_ESCAPE or $option3 == SQL_ESCAPE);
+		if($convert) {}
+
 		$sql = self::dbPrepareSql($sql, $params);
 		$sth = Db::$dbo->prepare($sql);
 
@@ -108,8 +111,11 @@ trait dbTrait
 		return $result;
 	}
 	
-	private static function dbFetch($sql, $params=array()) 
+	private static function dbFetch($sql, $params=array(), $option1=null, $option2=null, $option3=null) 
 	{
+		$convert = defined("SQL_ESCAPE") && ($option1 == SQL_ESCAPE or $option2 == SQL_ESCAPE or $option3 == SQL_ESCAPE);
+		if($convert) {}
+		
 		$sql = self::dbPrepareSql($sql, $params);
 		$sth = Db::$dbo->prepare($sql);
 

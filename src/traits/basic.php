@@ -1,37 +1,37 @@
 <?php
 namespace jumper;
 
-trait basicTrait 
+trait basicTrait
 {
-    
-    public static function hasErrors() 
+
+    public static function hasErrors()
     {
         return self::$errorCode;
     }
 
-    public static function setError($errorCode,$errorMessage,$errorMessage2="") 
+    public static function setError($errorCode,$errorMessage,$errorMessage2="")
     {
-            
+
         if ($errorMessage2) {
             $errorType=$errorMessage;
             $errorMessage=$errorMessage2;
         } else {
             $errorType=0;
         }
-        
+
         self::$errorCode=$errorCode;
         self::$errorMessages[]=array("code"=>$errorCode,"type"=>$errorType,"message"=>$errorMessage);
     }
-    
-    public static function initialize() 
+
+    public static function initialize()
     {
 		$configClass = "\\Config";
 		if(defined("APP_NAMESPACE")) {
 			$configClass = APP_NAMESPACE."\\Config";
 		}
 		$configClass::dbConnect();
-		
-		if (defined("DEBUG")) { 
+
+		if (defined("DEBUG")) {
 			set_error_handler('exceptions_error_handler');
 		}
 
@@ -67,14 +67,14 @@ trait basicTrait
         self::setParams($params);
 
     }
-    
-    public static function dieError($p1,$p2=null,$p3=null) 
+
+    public static function dieError($p1,$p2=null,$p3=null)
     {
         self::setError($p1,$p2,$p3);
         self::execute();
     }
 
-    public static function execute() 
+    public static function execute()
     {
         if (self::$errorCode) {
             http_response_code(self::$errorCode);
@@ -87,33 +87,33 @@ trait basicTrait
                 $errorData["params"]=self::getParams();
             }
             echo json_encode($errorData);
-        } else {    
+        } else {
             if (self::$responseJson) {
                 header('Content-Type: application/json; charset=utf-8');
                 echo json_encode(self::$responseJson,JSON_UNESCAPED_UNICODE);
-            } 
+            }
             if (self::$view) {
                 include(self::$view);
             }
         }
     }
-    
-    public static function setView($viewName) 
+
+    public static function setView($viewName)
     {
-        self::$view=$viewName;        
+        self::$view=$viewName;
     }
-    
-    public static function setResponseJson($responseJson) 
+
+    public static function setResponseJson($responseJson)
     {
         self::$responseJson=$responseJson;
     }
 
-    public static function responseTxtJson($txt) 
+    public static function responseTxtJson($txt)
     {
         self::setResponseJson(json_decode($txt,true));
     }
 
-    public static function strtoken($string, $pos, $token) 
+    public static function strtoken($string, $pos, $token)
     {
         $explode = explode($token, $string);
         if (abs($pos) > sizeof($explode) || $pos == 0) {
@@ -140,15 +140,15 @@ trait basicTrait
 	}
 	
 	public static function validateCaptcha($id, $code) {
-		
-		if(defined("ENV") && (ENV=="LOCAL" || ENV=="DEV") && $code == "AAAA") {
+
+		if(defined("ENV") && (ENV=="LOCAL" || ENV=="DEV") && $code == "1234") {
 			return true;
 		}
-		
+
 		self::dbQuery("delete from sc_captcha where created_date < DATE_SUB(NOW(),INTERVAL 15 MINUTE)");
 		$ok = (self::dbRes("select 1 from sc_captcha where id = {id} and code = {code} and remote_ip = {remote_ip}", array("id" => $id, "code" => $code, "remote_ip" => $_SERVER["REMOTE_ADDR"])) == 1 );
 		self::dbQuery("delete from sc_captcha where id = {id} and remote_ip = {remote_ip}", array("id" => $id, "remote_ip" => $_SERVER["REMOTE_ADDR"]));
-				
+
 		return $ok;
 	}
 
@@ -161,13 +161,13 @@ trait basicTrait
 	}
 	
 	public static function getCaptcha($params = array()) {
-	
+
 		$width = isset($params["width"]) ? $params["width"] : 55;
 		$height = isset($params["height"]) ? $params["height"] : 25;
 		$image = imagecreatetruecolor($width, $height);
 		$bg = imagecolorallocate($image, 255, 255,255);
 		imagefill($image, 0, 0, $bg);
-		$code = rand(str_repeat("1", (isset($params["digits"]) ? $params["digits"] : 25) ) * 1, str_repeat("9", (isset($params["digits"]) ? $params["digits"] : 25) ) * 1 ); 
+		$code = rand(str_repeat("1", (isset($params["digits"]) ? $params["digits"] : 25) ) * 1, str_repeat("9", (isset($params["digits"]) ? $params["digits"] : 25) ) * 1 );
 		$len = mb_strlen($code, "UTF-8");
 		$x = 8;
 		$y = 5;
@@ -180,10 +180,10 @@ trait basicTrait
 		ob_start();
 		imagejpeg($image, null, 90);
 		$jpgImage = ob_get_clean();
-		
+
 		$data = "data:image/jpeg;base64," . base64_encode($jpgImage);
 		$id = self::dbInsert("insert into sc_captcha set code = {code}, created_date = now(), remote_ip = {remote-ip}", array("code" => $code, "remote-ip" => $_SERVER["REMOTE_ADDR"]));
-		
+
 		return array("id" => $id, "data" => $data);
 	}
 
@@ -196,4 +196,44 @@ trait basicTrait
 		echo utf8_decode($out);
 		die;
 	}
+
+	public static function superLog($p) {
+		if(defined("SUPERLOG_SERVER") && (ENV=="LOCAL" || ENV=="DEV" || ENV=="QA"|| ENV=="STAGE")) {
+			$type = isset($p["type"]) ? $p["type"] : "txt";
+			$url = "http://".SUPERLOG_SERVER."?type=$type&key=".(defined("SUPERLOG_KEY")?SUPERLOG_KEY:"");
+			if(isset($p["sql"])) { $url .= "&query=".urlencode($p["sql"]); }
+			file_get_contents($url);
+		}
+	}
+
+    public static function convBase($numberInput, $fromBaseInput, $toBaseInput) {
+        if ($fromBaseInput==$toBaseInput) return $numberInput;
+        $fromBase = str_split($fromBaseInput,1);
+        $toBase = str_split($toBaseInput,1);
+        $number = str_split($numberInput,1);
+        $fromLen=strlen($fromBaseInput);
+        $toLen=strlen($toBaseInput);
+        $numberLen=strlen($numberInput);
+        $retval='';
+        if ($toBaseInput == '0123456789')
+        {
+            $retval=0;
+            for ($i = 1;$i <= $numberLen; $i++)
+                $retval = bcadd($retval, bcmul(array_search($number[$i-1], $fromBase),bcpow($fromLen,$numberLen-$i)));
+            return $retval;
+        }
+        if ($fromBaseInput != '0123456789')
+            $base10=convBase($numberInput, $fromBaseInput, '0123456789');
+        else
+            $base10 = $numberInput;
+        if ($base10<strlen($toBaseInput))
+            return $toBase[$base10];
+        while($base10 != '0')
+        {
+            $retval = $toBase[bcmod($base10,$toLen)].$retval;
+            $base10 = bcdiv($base10,$toLen,0);
+        }
+        return $retval;
+    }
+
 }

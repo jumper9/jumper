@@ -7,7 +7,49 @@ trait facebookTrait
     private static function fbInit() 
     {
 		$configClass=APP_NAMESPACE."\config";
-        $configClass::setFBDefaultApplication();
+		if(ENV=="LOCAL") {
+			$configClass::setFBDefaultApplicationLocal();
+		} else {
+			$configClass::setFBDefaultApplication();
+		}
+    }
+
+	public static function fbGetPosts($page, $search, $count = 100) 
+    {
+		if( $count < 0 || $count > 100 ) { $count = 100; }
+		
+		try {
+			self::fbInit();
+			$session = new \Facebook\FacebookSession("608574192612058|3f4c28208eafabf16472ea63f5ed91c5");
+			$data = (new \Facebook\FacebookRequest( $session, 'GET', "/$page/posts?limit=100" ))->execute()->getResponse()->data;
+			$posts=array();
+			$i=0;
+			foreach($data as $d) {
+				$message = isset($d->message) ? $d->message : "";
+				if(strpos("  ".$message,$search)>0) {
+					if($i++>=$count) { break; }
+					$message1 = isset($d->message) ? $d->message : "";
+					if (preg_match('/^.{1,52}\b/s', $message1, $match)) { $message=trim($match[0]); }
+					if($message != $message1) { $message .= "..."; }
+					
+					$posts[] = array("message" => $message1,
+								 "message_55" => $message,
+								 "link" => isset($d->link) ? $d->link : "",
+								 "picture" => isset($d->picture) ? $d->picture : "",
+								 "created_time" => isset($d->updated_time) ? $d->updated_time : (isset($d->created_time) ? $d->created_time : "") ,
+								 "name" => isset($d->from->name) ? $d->from->name : "",
+								 "likes" => isset($d->likes->data) ? sizeof($d->likes->data) : 0 );
+				}
+			}
+		} catch (\Facebook\FacebookAuthorizationException $ex) {
+			var_dump($ex);
+			$posts = false;
+		} catch (\Exception $ex) {
+			var_dump($ex);
+			$posts = false;
+		} 
+		
+        return (array) $posts;
     }
 	
     public static function fbGetProfile() 
