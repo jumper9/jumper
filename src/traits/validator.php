@@ -67,6 +67,11 @@ trait validatorTrait
 					$ok = false;
 				}
 
+			} else if ($type == "uniqid") {
+				if(!self::validateUniqId(self::strtoken($value,1,":"), self::strtoken($value,2,":")) ) {
+					$ok = false;
+				}
+
 			} else if ($type == "email") {
 				if(!filter_var($value, FILTER_VALIDATE_EMAIL)) {
 					$ok = false;
