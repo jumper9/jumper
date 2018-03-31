@@ -2,7 +2,7 @@
     "name": "jumper/jumper",
 	"description" : "Jumper - Superlight Framework",
 	"require": {
-		"facebook/php-sdk-v4" : "*",
+		"facebook/graph-sdk" : "*",
 		"tpyo/amazon-s3-php-class" : "*",
 		"j7mbo/twitter-api-php" : "*"
     },
