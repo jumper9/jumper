@@ -4,7 +4,8 @@
 	"require": {
 		"facebook/graph-sdk" : "*",
 		"tpyo/amazon-s3-php-class" : "*",
-		"j7mbo/twitter-api-php" : "*"
+		"j7mbo/twitter-api-php" : "*",
+		"google/apiclient" : "*"
     },
 	"license": "MIT",
 	"authors": [
