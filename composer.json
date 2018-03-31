@@ -2,10 +2,9 @@
     "name": "jumper/jumper",
 	"description" : "Jumper - Superlight Framework",
 	"require": {
-		"facebook/php-sdk-v4" : "4.0.*",
-		"tpyo/amazon-s3-php-class" : "0.5.*",
-		"j7mbo/twitter-api-php" : "1.0.*",
-		"google/apiclient" : "1.1.*"
+		"facebook/php-sdk-v4" : "*",
+		"tpyo/amazon-s3-php-class" : "*",
+		"j7mbo/twitter-api-php" : "*"
     },
 	"license": "MIT",
 	"authors": [
